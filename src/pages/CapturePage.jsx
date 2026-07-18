@@ -47,10 +47,16 @@ export default function CapturePage() {
     <div className="p-4 safe-bottom max-w-2xl mx-auto animate-fade-in flex flex-col h-full min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Capture</h1>
-        <div className="flex gap-4 text-sm text-[var(--color-text-muted)]">
-          <span>{stats.total} total</span>
-          <span className="text-[var(--color-vault)]">{stats.vaulted} vaulted</span>
-        </div>
+        <button 
+          onClick={() => navigate('/dashboard')}
+          className="text-xs text-[var(--color-primary-hover)] bg-[var(--color-primary)]/10 px-2.5 py-1.5 rounded-lg border border-[var(--color-primary)]/20 hover:bg-[var(--color-primary)] hover:text-white transition-all font-semibold"
+        >
+          Portfolio Dashboard
+        </button>
+      </div>
+      <div className="flex justify-end gap-4 text-xs text-[var(--color-text-muted)] mb-4">
+        <span>{stats.total} total</span>
+        <span className="text-[var(--color-vault)]">{stats.vaulted} vaulted</span>
       </div>
 
       <div className="flex-1 flex flex-col relative">
