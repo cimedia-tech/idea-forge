@@ -64,7 +64,7 @@ def main():
     create_folder(token, '02_Approved_For_Build', vault_id)
     create_folder(token, '03_Archived', vault_id)
     
-    print("\n✅ IdeaForge Vault folder structure created!")
+    print("\n[SUCCESS] IdeaForge Vault folder structure created!")
 
 if __name__ == '__main__':
     main()
