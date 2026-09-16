@@ -1,21 +1,54 @@
 import { updateIdea } from './db';
 
-// Mocking the Google Drive API call for now.
-// Real implementation would POST to a backend or use Google API client directly.
-export async function fileToGoogleDrive(idea) {
-  console.log('Filing to Google Drive:', idea.title);
-  
-  // Simulate network request
-  await new Promise(resolve => setTimeout(resolve, 1500));
-  
-  // Mock Drive Link
-  const driveLink = `https://docs.google.com/document/d/mock-id-${idea.id}/edit`;
-  
-  // Update idea in IndexedDB
-  await updateIdea(idea.id, {
+function planMarkdown(idea) {
+  const date = new Date().toISOString().split('T')[0];
+  return `# ${idea.title || 'Untitled Idea'}
+
+**Prepared:** ${date}
+**Complexity:** ${idea.complexity || 'TBD'}
+**Estimated build time:** ${idea.buildTime || 'TBD'}
+
+## Raw Capture
+${idea.rawText || 'Not provided.'}
+
+## Problem Statement
+${idea.problemStatement || 'Not yet defined.'}
+
+## Proposed Solution
+${idea.solution || 'Not yet defined.'}
+
+## Target Market
+${idea.targetMarket || 'Not yet defined.'}
+
+## Revenue Model
+${idea.revenueModel || 'Not yet defined.'}
+
+## Tech Stack
+${(idea.techStack || []).join(', ') || 'Not yet defined.'}
+
+## Tags
+${(idea.tags || []).map((tag) => `\`${tag}\``).join(' ') || 'None'}
+`;
+}
+
+export async function downloadPlan(idea) {
+  const date = new Date().toISOString().split('T')[0];
+  const slug = (idea.title || 'untitled-idea')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  const fileName = `${date}_${slug || 'untitled-idea'}.md`;
+  const blob = new Blob([planMarkdown(idea)], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = fileName;
+  anchor.click();
+  URL.revokeObjectURL(url);
+
+  return updateIdea(idea.id, {
     status: 'filed',
-    driveLink
+    driveLink: null,
+    exportedAt: new Date().toISOString()
   });
-  
-  return driveLink;
 }

@@ -14,15 +14,15 @@ export default function PlansPage() {
     <div className="p-4 safe-bottom max-w-2xl mx-auto animate-fade-in min-h-screen">
       <div className="flex items-center gap-3 mb-6">
         <FolderOpen className="text-[var(--color-primary)]" size={28} />
-        <h1 className="text-2xl font-bold">Filed Plans</h1>
+        <h1 className="text-2xl font-bold">Prepared Plans</h1>
       </div>
 
       <div className="space-y-4">
         {ideas.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center opacity-50">
             <FolderOpen size={48} className="mb-4 text-[var(--color-text-muted)]" />
-            <p className="text-[var(--color-text-secondary)]">No plans filed yet.</p>
-            <p className="text-sm mt-2">Refine ideas and file them to Drive.</p>
+            <p className="text-[var(--color-text-secondary)]">No plans prepared yet.</p>
+            <p className="text-sm mt-2">Refine an idea and download its build plan.</p>
           </div>
         ) : (
           ideas.map(idea => (

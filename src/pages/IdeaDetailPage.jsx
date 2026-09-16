@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getIdea, updateIdea, vaultIdea, deleteIdea } from '../services/db';
-import { fileToGoogleDrive } from '../services/drive';
+import { downloadPlan } from '../services/drive';
 import { refineIdea } from '../services/refine';
-import { ArrowLeft, Trash2, BrainCircuit, Star, CloudUpload } from 'lucide-react';
+import { ArrowLeft, Trash2, BrainCircuit, Star, Download } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import TechStackChips from '../components/TechStackChips';
 import { BuildStatusSelector } from '../components/BuildStatusIndicator';
@@ -44,9 +44,8 @@ export default function IdeaDetailPage() {
     setIdea(updated);
   };
 
-  const handleFileToDrive = async () => {
-    const link = await fileToGoogleDrive(idea);
-    const updated = await getIdea(id);
+  const handleDownloadPlan = async () => {
+    const updated = await downloadPlan(idea);
     setIdea(updated);
   };
 
@@ -143,24 +142,22 @@ export default function IdeaDetailPage() {
               </button>
             )}
             
-            {(idea.status === 'vaulted' || idea.status === 'refined') && idea.status !== 'filed' && (
+            {(idea.status === 'vaulted' || idea.status === 'refined') && (
               <button 
-                onClick={handleFileToDrive}
+                onClick={handleDownloadPlan}
                 className="flex-1 flex flex-col items-center justify-center gap-1 bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] py-3 rounded-xl transition-colors font-semibold shadow-lg shadow-indigo-500/20"
               >
-                <CloudUpload size={20} /> File to Drive
+                <Download size={20} /> Download Plan
               </button>
             )}
             
             {idea.status === 'filed' && (
-              <a 
-                href={idea.driveLink}
-                target="_blank"
-                rel="noreferrer"
+              <button
+                onClick={handleDownloadPlan}
                 className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-surface-hover)] text-[var(--color-text-primary)] hover:bg-[var(--color-border)] py-3 rounded-xl transition-colors font-semibold"
               >
-                Open Google Doc
-              </a>
+                <Download size={18} /> Download Again
+              </button>
             )}
           </div>
         </div>

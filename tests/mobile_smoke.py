@@ -39,6 +39,8 @@ def main() -> None:
         page.get_by_role("button", name="Refine with AI").click()
         expect(page.get_by_text("Problem Statement")).to_be_visible(timeout=20_000)
         assert not page.get_by_text("Auto-Generated Awesome App").is_visible()
+        expect(page.get_by_role("button", name="Download Plan")).to_be_visible()
+        assert not page.get_by_text("File to Drive").is_visible()
 
         service_worker_ready = page.evaluate(
             "navigator.serviceWorker ? navigator.serviceWorker.ready.then(() => true) : false"
