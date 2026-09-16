@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import IdeaCard from '../components/IdeaCard';
 import { getIdeas } from '../services/db';
-import { downloadPlan } from '../services/drive';
+import { syncPlanToDrive } from '../services/drive';
 import { Lock } from 'lucide-react';
 
 export default function VaultPage() {
@@ -18,8 +18,8 @@ export default function VaultPage() {
     loadIdeas();
   }, []);
 
-  const handleDownloadPlan = async (idea) => {
-    await downloadPlan(idea);
+  const handleSyncPlan = async (idea) => {
+    await syncPlanToDrive(idea);
     loadIdeas();
   };
 
@@ -48,7 +48,7 @@ export default function VaultPage() {
               key={idea.id} 
               idea={idea} 
               onClick={() => navigate(`/idea/${idea.id}`)} 
-              onFileToDrive={handleDownloadPlan}
+              onFileToDrive={handleSyncPlan}
             />
           ))
         )}

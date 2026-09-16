@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getIdea, updateIdea, vaultIdea, deleteIdea } from '../services/db';
-import { downloadPlan } from '../services/drive';
+import { syncPlanToDrive } from '../services/drive';
 import { refineIdea } from '../services/refine';
-import { ArrowLeft, Trash2, BrainCircuit, Star, Download } from 'lucide-react';
+import { ArrowLeft, Trash2, BrainCircuit, Star, CloudUpload } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import TechStackChips from '../components/TechStackChips';
 import { BuildStatusSelector } from '../components/BuildStatusIndicator';
@@ -13,6 +13,7 @@ export default function IdeaDetailPage() {
   const navigate = useNavigate();
   const [idea, setIdea] = useState(null);
   const [isRefining, setIsRefining] = useState(false);
+  const [syncMessage, setSyncMessage] = useState('');
 
   useEffect(() => {
     getIdea(id).then(setIdea);
@@ -44,9 +45,15 @@ export default function IdeaDetailPage() {
     setIdea(updated);
   };
 
-  const handleDownloadPlan = async () => {
-    const updated = await downloadPlan(idea);
-    setIdea(updated);
+  const handleSyncPlan = async () => {
+    setSyncMessage('');
+    try {
+      const result = await syncPlanToDrive(idea);
+      setIdea(result.idea);
+      setSyncMessage(result.message);
+    } catch (error) {
+      setSyncMessage(`Drive sync failed: ${error.message}`);
+    }
   };
 
   const handleBuildStatusChange = async (newStatus) => {
@@ -144,22 +151,23 @@ export default function IdeaDetailPage() {
             
             {(idea.status === 'vaulted' || idea.status === 'refined') && (
               <button 
-                onClick={handleDownloadPlan}
+                onClick={handleSyncPlan}
                 className="flex-1 flex flex-col items-center justify-center gap-1 bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] py-3 rounded-xl transition-colors font-semibold shadow-lg shadow-indigo-500/20"
               >
-                <Download size={20} /> Download Plan
+                <CloudUpload size={20} /> Sync to Drive
               </button>
             )}
             
             {idea.status === 'filed' && (
               <button
-                onClick={handleDownloadPlan}
+                onClick={handleSyncPlan}
                 className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-surface-hover)] text-[var(--color-text-primary)] hover:bg-[var(--color-border)] py-3 rounded-xl transition-colors font-semibold"
               >
-                <Download size={18} /> Download Again
+                <CloudUpload size={18} /> Sync Again
               </button>
             )}
           </div>
+          {syncMessage && <p className="text-xs text-[var(--color-text-muted)]" role="status">{syncMessage}</p>}
         </div>
       )}
     </div>

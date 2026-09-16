@@ -39,8 +39,13 @@ def main() -> None:
         page.get_by_role("button", name="Refine with AI").click()
         expect(page.get_by_text("Problem Statement")).to_be_visible(timeout=20_000)
         assert not page.get_by_text("Auto-Generated Awesome App").is_visible()
-        expect(page.get_by_role("button", name="Download Plan")).to_be_visible()
+        expect(page.get_by_role("button", name="Sync to Drive")).to_be_visible()
         assert not page.get_by_text("File to Drive").is_visible()
+
+        with page.expect_download() as download_info:
+            page.get_by_role("button", name="Sync to Drive").click()
+        assert download_info.value.suggested_filename.endswith(".md")
+        expect(page.get_by_role("status")).to_contain_text("Markdown")
 
         service_worker_ready = page.evaluate(
             "navigator.serviceWorker ? navigator.serviceWorker.ready.then(() => true) : false"

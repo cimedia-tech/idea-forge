@@ -59,7 +59,7 @@ export default function IdeaCard({ idea, onClick, onVault, onFileToDrive }) {
                onClick={(e) => { e.stopPropagation(); onFileToDrive(idea); }}
                className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] font-medium px-2 py-1 bg-[var(--color-primary)]/10 rounded-md transition-colors"
              >
-               Download Plan
+               Sync to Drive
              </button>
            )}
         </div>

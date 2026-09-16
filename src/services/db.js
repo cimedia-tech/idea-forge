@@ -35,6 +35,8 @@ export async function addIdea(rawText) {
     solution: null,
     refinementSource: null,
     driveLink: null,
+    driveFileId: null,
+    driveSyncedAt: null,
     buildStatus: 'none',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

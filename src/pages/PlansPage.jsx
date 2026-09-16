@@ -43,7 +43,7 @@ export default function PlansPage() {
               </div>
               
               <div className="flex gap-3">
-                {idea.driveLink && (
+                {idea.driveLink ? (
                   <a 
                     href={idea.driveLink}
                     target="_blank"
@@ -52,6 +52,10 @@ export default function PlansPage() {
                   >
                     <ExternalLink size={16} /> Drive Doc
                   </a>
+                ) : (
+                  <span className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-surface-hover)] text-[var(--color-text-secondary)] py-2 rounded-lg text-sm font-medium">
+                    Local Markdown export
+                  </span>
                 )}
                 <button className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white py-2 rounded-lg transition-colors text-sm font-medium">
                   <Play size={16} /> Initiate Build
