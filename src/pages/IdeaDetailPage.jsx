@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getIdea, updateIdea, vaultIdea, deleteIdea } from '../services/db';
 import { fileToGoogleDrive } from '../services/drive';
+import { refineIdea } from '../services/refine';
 import { ArrowLeft, Trash2, BrainCircuit, Star, CloudUpload } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import TechStackChips from '../components/TechStackChips';
@@ -21,23 +22,14 @@ export default function IdeaDetailPage() {
 
   const handleRefine = async () => {
     setIsRefining(true);
-    // Mock Refinement process
-    setTimeout(async () => {
-      const refinedData = {
-        status: 'refined',
-        title: 'Auto-Generated Awesome App',
-        techStack: ['React', 'Tailwind', 'Node.js', 'PostgreSQL', 'Stripe'],
-        problemStatement: 'People need a way to track their fleeting thoughts before they disappear.',
-        solution: 'A mobile-first PWA that captures voice and text, and uses AI to expand them into actionable business plans.',
-        targetMarket: 'Entrepreneurs, creators, ADHD builders',
-        revenueModel: 'Freemium ($5/mo for AI features)',
-        complexity: 'Medium',
-        buildTime: '2 weeks'
-      };
-      const updated = await updateIdea(id, refinedData);
-      setIdea(updated);
-      setIsRefining(false);
-    }, 2000);
+    const refinedData = await refineIdea(idea.rawText);
+    const updated = await updateIdea(id, {
+      ...refinedData,
+      status: 'refined',
+      refinementSource: refinedData.source
+    });
+    setIdea(updated);
+    setIsRefining(false);
   };
 
   const handleDelete = async () => {
@@ -97,6 +89,11 @@ export default function IdeaDetailPage() {
         </button>
       ) : (
         <div className="space-y-6 animate-slide-up">
+          {idea.refinementSource === 'local' && (
+            <div className="rounded-xl border border-amber-300/20 bg-amber-300/10 px-4 py-3 text-sm text-amber-100">
+              AI is not connected yet, so this is a local starter refinement. Add <code>GEMINI_API_KEY</code> in Vercel to enable AI refinement.
+            </div>
+          )}
           <section>
             <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">Tech Stack</h3>
             <TechStackChips techStack={idea.techStack} />

@@ -1,13 +1,12 @@
 {
   "name": "IdeaForge",
   "short_name": "Ideas",
-  "description": "AI-Powered Idea Vault",
+  "description": "Capture, clarify, and prepare ideas for execution.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0F0F14",
   "theme_color": "#6366F1",
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
 }

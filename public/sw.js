@@ -1,8 +1,9 @@
-const CACHE_NAME = 'ideaforge-v1';
+const CACHE_NAME = 'ideaforge-v2';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/manifest.json'
+  '/manifest.json',
+  '/icon.svg'
 ];
 
 self.addEventListener('install', event => {

@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import VoiceCapture from '../components/VoiceCapture';
-import { addIdea, getStats } from '../services/db';
+import { addIdea, getStats, updateIdea } from '../services/db';
+import { refineIdea } from '../services/refine';
 import { BrainCircuit } from 'lucide-react';
 
 export default function CapturePage() {
   const [text, setText] = useState('');
   const [stats, setStats] = useState({ total: 0, vaulted: 0, filed: 0 });
   const [isRefining, setIsRefining] = useState(false);
+  const [feedback, setFeedback] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,6 +20,7 @@ export default function CapturePage() {
     if (!text.trim()) return;
     await addIdea(text);
     setText('');
+    setFeedback('Saved to your local vault.');
     getStats().then(setStats);
     // show success toast maybe
   };
@@ -29,12 +32,14 @@ export default function CapturePage() {
     // 1. Save as draft
     const idea = await addIdea(text);
     
-    // 2. Mock AI Refinement (would call backend here)
-    setTimeout(async () => {
-      // simulate redirect to detail page for real refinement or after refinement
-      setIsRefining(false);
-      navigate(`/idea/${idea.id}`);
-    }, 1500);
+    const refinedData = await refineIdea(text);
+    await updateIdea(idea.id, {
+      ...refinedData,
+      status: 'refined',
+      refinementSource: refinedData.source
+    });
+    setIsRefining(false);
+    navigate(`/idea/${idea.id}`);
   };
 
   const handleTranscript = (transcript, isFinal) => {
@@ -58,6 +63,8 @@ export default function CapturePage() {
         <span>{stats.total} total</span>
         <span className="text-[var(--color-vault)]">{stats.vaulted} vaulted</span>
       </div>
+
+      {feedback && <p className="text-xs text-emerald-300 mb-4" role="status">{feedback}</p>}
 
       <div className="flex-1 flex flex-col relative">
         <textarea

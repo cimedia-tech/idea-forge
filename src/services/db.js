@@ -33,6 +33,7 @@ export async function addIdea(rawText) {
     targetMarket: null,
     problemStatement: null,
     solution: null,
+    refinementSource: null,
     driveLink: null,
     buildStatus: 'none',
     createdAt: new Date().toISOString(),
